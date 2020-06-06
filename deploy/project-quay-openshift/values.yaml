@@ -5,52 +5,13 @@ build:
   git:
     url: https://github.com/mosen/quay.git
     ref: "feature/openshift_oauth"
-  dockerfilePath: Dockerfile.rhel7
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-
-
-service:
-  type: ClusterIP
-  port: 80
-
-
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+  dockerfilePath: Dockerfile.ubi8
 
 # Project Quay PostgreSQL Instance
 postgresql:
   commonLabels:
-    app.kubernetes.io/part-of: quay
-    app.kubernetes.io/version: "HEAD"
-    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: database
     # Required by Quay Deployment
     quay-enterprise-component: appdb
 
@@ -72,12 +33,9 @@ databasePassword: quay
 redisPassword: redis
 redis:
   image: registry.access.redhat.com/rhscl/redis-32-rhel7
-  commonLabels:
+  labels:
     app.kubernetes.io/name: redis
-    app.kubernetes.io/component: keyvaluestore
-    app.kubernetes.io/part-of: quay
-    app.kubernetes.io/version: 3.2.13
-    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/component: kvstore
     # Required by Quay Deployment
     quay-enterprise-component: redis
 
@@ -87,17 +45,31 @@ redis:
   service:
     port: 6379
 
+configApp:
+  labels:
+    app.kubernetes.io/name: config-tool
+    app.kubernetes.io/component: configuration
+    # Required by Quay Deployment
+    quay-enterprise-component: config-tool
 
+  selectorLabels:
+    quay-enterprise-component: config-tool
+
+app:
+  labels:
+    app.kubernetes.io/name: quay-app
+    app.kubernetes.io/component: application
+    # Required by Quay Deployment
+    quay-enterprise-component: app
+
+  selectorLabels:
+    quay-enterprise-component: app
 
 commonLabels:
-  app.kubernetes.io/name: quay-app
-  app.kubernetes.io/component: application
   app.kubernetes.io/part-of: quay
   app.kubernetes.io/version: HEAD
   app.kubernetes.io/managed-by: helm
-  # Required by Quay Deployment
-  quay-enterprise-component: app
 
-selectorLabels:
-  quay-enterprise-component: app
+
+
 
