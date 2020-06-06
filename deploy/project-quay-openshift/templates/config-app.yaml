@@ -1,0 +1,53 @@
+{{/*---*/}}
+{{/*apiVersion: apps/v1*/}}
+{{/*kind: Deployment*/}}
+{{/*metadata:*/}}
+{{/*  name: quay-config*/}}
+{{/*  namespace: {{ .Release.Namespace }}*/}}
+{{/*  labels:*/}}
+{{/*  {{- with .Values.configApp.labels }}*/}}
+{{/*  {{- toYaml . | nindent 4 }}*/}}
+{{/*  {{- end }}*/}}
+{{/*spec:*/}}
+{{/*  replicas: {{ .Values.replicaCount }}*/}}
+{{/*  selector:*/}}
+{{/*    matchLabels:*/}}
+{{/*    {{- with .Values.configApp.selectorLabels }}*/}}
+{{/*    {{- toYaml . | nindent 6 }}*/}}
+{{/*  {{- end }}*/}}
+{{/*  template:*/}}
+{{/*    metadata:*/}}
+{{/*      namespace: {{ .Release.Namespace }}*/}}
+{{/*      labels:*/}}
+{{/*      {{- with .Values.configApp.selectorLabels }}*/}}
+{{/*      {{- toYaml . | nindent 8 }}*/}}
+{{/*    {{- end }}*/}}
+{{/*    spec:*/}}
+{{/*      containers:*/}}
+{{/*        - name: quay-config*/}}
+{{/*          image: "{{ .Values.imageRepository }}:v{{ .Chart.AppVersion }}"*/}}
+{{/*          ports:*/}}
+{{/*            - containerPort: 8443*/}}
+{{/*          command: ["/quay-registry/quay-entrypoint.sh"]*/}}
+{{/*          args: ["config", "{{ .Values.configSecret }}"]*/}}
+{{/*      imagePullSecrets:*/}}
+{{/*        - name: redhat-quay-pull-secret*/}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quay-enterprise-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- with .Values.configApp.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      name: https
+      port: 443
+      targetPort: 8443
+  selector:
+    quay-enterprise-component: config-tool

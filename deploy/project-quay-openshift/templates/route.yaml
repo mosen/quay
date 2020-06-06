@@ -1,17 +1,19 @@
 ---
-apiVersion: v1
+apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: project-quay
   namespace: {{ .Release.Namespace }}
   labels:
-  {{- with .Values.commonLabels }}
+  {{- with .Values.app.labels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  port:
+    targetPort: 8443
+  tls:
+    termination: passthrough
   to:
     kind: Service
     name: quay-web
-    port: http
-  tls:
-    termination: edge
+    weight: 100
