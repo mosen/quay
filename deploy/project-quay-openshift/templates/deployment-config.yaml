@@ -1,0 +1,49 @@
+{{/*---*/}}
+{{/*apiVersion: apps.openshift.io/v1*/}}
+{{/*kind: DeploymentConfig*/}}
+{{/*metadata:*/}}
+{{/*  name: project-quay*/}}
+{{/*  namespace: {{ .Release.Namespace }}*/}}
+{{/*  labels:*/}}
+{{/*  {{- with .Values.app.labels }}*/}}
+{{/*    {{- toYaml . | nindent 4 }}*/}}
+{{/*  {{- end }}*/}}
+{{/*spec:*/}}
+{{/*  replicas: 1*/}}
+{{/*  selector:*/}}
+{{/*    {{- with .Values.app.selectorLabels }}*/}}
+{{/*      {{- toYaml . | nindent 4 }}*/}}
+{{/*    {{- end }}*/}}
+{{/*  template:*/}}
+{{/*    metadata:*/}}
+{{/*      labels:*/}}
+{{/*      {{- with .Values.app.selectorLabels }}*/}}
+{{/*        {{- toYaml . | nindent 8 }}*/}}
+{{/*      {{- end }}*/}}
+{{/*    spec:*/}}
+{{/*      volumes:*/}}
+{{/*        - name: configvolume*/}}
+{{/*          secret:*/}}
+{{/*            secretName: quay-enterprise-config-secret*/}}
+{{/*      containers:*/}}
+{{/*        - name: project-quay*/}}
+{{/*          image: "project-quay:latest"*/}}
+{{/*          ports:*/}}
+{{/*            - containerPort: 8080*/}}
+{{/*            - containerPort: 8443*/}}
+{{/*          volumeMounts:*/}}
+{{/*            - name: configvolume*/}}
+{{/*              readOnly: false*/}}
+{{/*              mountPath: /conf/stack*/}}
+
+{{/*  triggers:*/}}
+{{/*    - type: ConfigChange*/}}
+{{/*    - type: ImageChange*/}}
+{{/*      imageChangeParams:*/}}
+{{/*        automatic: true*/}}
+{{/*        containerNames:*/}}
+{{/*          - project-quay*/}}
+{{/*        from:*/}}
+{{/*          kind: ImageStreamTag*/}}
+{{/*          name: project-quay:latest*/}}
+

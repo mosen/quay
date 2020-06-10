@@ -4,7 +4,7 @@ replicaCount: 1
 build:
   git:
     url: https://github.com/mosen/quay.git
-    ref: "feature/openshift_oauth"
+    ref: "mosen/openshift_oauth_integrated_helm"
   dockerfilePath: Dockerfile.ubi8
 
 # Project Quay PostgreSQL Instance
@@ -31,6 +31,7 @@ databasePassword: quay
 
 # Project Quay Redis
 redisPassword: redis
+# redisImage:
 redis:
   image: registry.access.redhat.com/rhscl/redis-32-rhel7
   labels:
@@ -44,6 +45,9 @@ redis:
 
   service:
     port: 6379
+
+# Replace this with the Quay Config App Secret
+configSecret: quayconfig
 
 configApp:
   labels:
