@@ -1,5 +1,6 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.2
 LABEL maintainer "mosen@noreply.users.github.com"
+USER root
 
 ENV OS=linux \
     ARCH=amd64 \
@@ -111,4 +112,4 @@ CMD ["registry"]
 
 # root required to create and install certs
 # https://jira.coreos.com/browse/QUAY-1468
-# USER 1001
+USER 1001
