@@ -1,37 +1,38 @@
-{{/*---*/}}
-{{/*apiVersion: apps/v1*/}}
-{{/*kind: Deployment*/}}
-{{/*metadata:*/}}
-{{/*  name: quay-config*/}}
-{{/*  namespace: {{ .Release.Namespace }}*/}}
-{{/*  labels:*/}}
-{{/*  {{- with .Values.configApp.labels }}*/}}
-{{/*  {{- toYaml . | nindent 4 }}*/}}
-{{/*  {{- end }}*/}}
-{{/*spec:*/}}
-{{/*  replicas: {{ .Values.replicaCount }}*/}}
-{{/*  selector:*/}}
-{{/*    matchLabels:*/}}
-{{/*    {{- with .Values.configApp.selectorLabels }}*/}}
-{{/*    {{- toYaml . | nindent 6 }}*/}}
-{{/*  {{- end }}*/}}
-{{/*  template:*/}}
-{{/*    metadata:*/}}
-{{/*      namespace: {{ .Release.Namespace }}*/}}
-{{/*      labels:*/}}
-{{/*      {{- with .Values.configApp.selectorLabels }}*/}}
-{{/*      {{- toYaml . | nindent 8 }}*/}}
-{{/*    {{- end }}*/}}
-{{/*    spec:*/}}
-{{/*      containers:*/}}
-{{/*        - name: quay-config*/}}
-{{/*          image: "{{ .Values.imageRepository }}:v{{ .Chart.AppVersion }}"*/}}
-{{/*          ports:*/}}
-{{/*            - containerPort: 8443*/}}
-{{/*          command: ["/quay-registry/quay-entrypoint.sh"]*/}}
-{{/*          args: ["config", "{{ .Values.configSecret }}"]*/}}
-{{/*      imagePullSecrets:*/}}
-{{/*        - name: redhat-quay-pull-secret*/}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-quay-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: project-quay
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: app
+    app.kubernetes.io/part-of: quay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+    {{- with .Values.configApp.selectorLabels }}
+    {{- toYaml . | nindent 6 }}
+  {{- end }}
+  template:
+    metadata:
+      namespace: {{ .Release.Namespace }}
+      labels:
+      {{- with .Values.configApp.selectorLabels }}
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+      containers:
+        - name: project-quay-config
+          image: image-registry.openshift-image-registry.svc:5000/project-quay/project-quay:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          args: ["config", "{{ .Values.configSecret }}"]
 ---
 apiVersion: v1
 kind: Service
@@ -51,3 +52,22 @@ spec:
       targetPort: 8443
   selector:
     quay-enterprise-component: config-tool
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: project-quay-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- with .Values.configApp.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  port:
+    targetPort: 8443
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: quay-enterprise-config
+    weight: 100
