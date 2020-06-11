@@ -55,8 +55,18 @@ case "$QUAYENTRY" in
         : "${CONFIG_APP_PASSWORD:?Missing password argument for configuration tool}"
         printf '%s' "${CONFIG_APP_PASSWORD}" | openssl passwd -apr1 -stdin >> "$QUAYDIR/config_app/conf/htpasswd"
 
-        "${QUAYPATH}/config_app/init/certs_create.sh" || exit
-        "${QUAYPATH}/conf/init/certs_install.sh" || exit
+        "${QUAYPATH}/config_app/init/certs_create.sh"
+        if [[ ! $? -eq 0 ]]; then
+          echo "Failed to create certificates for config-app"
+          exit
+        fi
+
+        "${QUAYPATH}/conf/init/certs_install.sh"
+#        if [[ ! $? -eq 0 ]]; then
+#          echo "Failed to install certificates for config-app"
+#          exit
+#        fi
+
         exec supervisord -c "${QUAYPATH}/config_app/conf/supervisord.conf" 2>&1
         ;;
     "migrate")

@@ -48,5 +48,7 @@ do
  cat "$f" >> $PYTHON_ROOT/site-packages/certifi/cacert.pem
 done
 
+echo "Updating ca trust"
+
 # Update all CA certificates.
 update-ca-trust extract
