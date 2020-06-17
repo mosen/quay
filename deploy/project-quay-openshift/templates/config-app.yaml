@@ -33,6 +33,9 @@ spec:
             - containerPort: 8080
             - containerPort: 8443
           args: ["config", "{{ .Values.configSecret }}"]
+          env:
+            - name: QE_K8S_NAMESPACE
+              value: project-quay
 ---
 apiVersion: v1
 kind: Service
@@ -66,7 +69,7 @@ spec:
   port:
     targetPort: 8443
   tls:
-    termination: passthrough
+    termination: reencrypt
   to:
     kind: Service
     name: quay-enterprise-config

@@ -5,7 +5,7 @@ build:
   git:
     url: https://github.com/mosen/quay.git
     ref: "mosen/openshift_oauth_integrated_helm"
-  dockerfilePath: Dockerfile.ubi8
+  dockerfilePath: Dockerfile
 
 # Project Quay PostgreSQL Instance
 postgresql:
