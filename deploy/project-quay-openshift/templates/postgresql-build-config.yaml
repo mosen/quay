@@ -1,0 +1,2 @@
+# Software Collections PostgreSQL does not include any method of injecting configuration OTHER than the s2i build method
+# This BuildConfig exists to inject `CREATE EXTENSION pg_trgm` into the container.

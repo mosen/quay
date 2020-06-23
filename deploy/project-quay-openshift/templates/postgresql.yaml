@@ -108,6 +108,6 @@ spec:
       port: {{ .Values.postgresql.service.port }}
       targetPort: 5432
   selector:
-  {{- with .Values.selectorLabels }}
+  {{- with .Values.postgresql.selectorLabels }}
   {{- toYaml . | nindent 4 }}
   {{- end }}
