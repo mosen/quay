@@ -376,7 +376,7 @@ class FakeStripe(object):
 
         FAKE_CARD_LIST = AttrDict({"data": [FAKE_CARD],})
 
-        ACTIVE_CUSTOMERS = {}  # type: AttrDict[str,AttrDict[str,Customer]]
+        ACTIVE_CUSTOMERS = {}  # type: Dict[str,FakeStripe]
 
         @property
         def card(self):
