@@ -1,4 +1,5 @@
-from multiprocessing.queues import Empty, Queue
+from multiprocessing.queues import Queue
+from queue import Empty
 
 
 class QueueFile(object):
