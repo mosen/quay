@@ -5,6 +5,8 @@ ipdb
 ipython
 mock==3.0.5
 mockredispy==2.9.3
+mypy==0.782
+mypy-extensions==0.4.3
 pytest
 pytest-cov
 pytest-flask
@@ -17,3 +19,5 @@ pytest-sugar
 tox
 tox-docker
 tqdm
+typing==3.7.4.1
+typing-extensions==3.7.4.2
