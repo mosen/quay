@@ -195,7 +195,7 @@ class DefaultConfig(ImmutableConfig):
 
     # DB config
     DB_URI = "sqlite:///test/data/test.db"
-    DB_CONNECTION_ARGS: Optional[Dict[str,Any]] = {
+    DB_CONNECTION_ARGS: Optional[Dict[str, Any]] = {
         "threadlocals": True,
         "autorollback": True,
     }
@@ -390,9 +390,9 @@ class DefaultConfig(ImmutableConfig):
     # See: https://github.com/docker/docker/blob/master/registry/session.go#L320
     LIBRARY_NAMESPACE = "library"
 
-    BUILD_MANAGER: Tuple[str, Dict[Any,Any]] = ("enterprise", {})
+    BUILD_MANAGER: Tuple[str, Dict[Any, Any]] = ("enterprise", {})
 
-    DISTRIBUTED_STORAGE_CONFIG: Optional[Dict[str,List[Any]]] = {
+    DISTRIBUTED_STORAGE_CONFIG: Optional[Dict[str, List[Any]]] = {
         "local_eu": ["LocalStorage", {"storage_path": "test/data/registry/eu"}],
         "local_us": ["LocalStorage", {"storage_path": "test/data/registry/us"}],
     }
@@ -401,7 +401,7 @@ class DefaultConfig(ImmutableConfig):
     DISTRIBUTED_STORAGE_DEFAULT_LOCATIONS = ["local_us"]
 
     # Health checker.
-    HEALTH_CHECKER: Tuple[str, Dict[Any,Any]] = ("LocalHealthCheck", {})
+    HEALTH_CHECKER: Tuple[str, Dict[Any, Any]] = ("LocalHealthCheck", {})
 
     # Userfiles
     USERFILES_LOCATION = "local_us"
@@ -437,7 +437,7 @@ class DefaultConfig(ImmutableConfig):
     AVATAR_KIND = "local"
 
     # Custom branding
-    BRANDING: Dict[str,Optional[str]] = {
+    BRANDING: Dict[str, Optional[str]] = {
         "logo": "/static/img/quay-horizontal-color.svg",
         "footer_img": None,
         "footer_url": None,
@@ -675,7 +675,7 @@ class DefaultConfig(ImmutableConfig):
 
     # Log model
     LOGS_MODEL = "database"
-    LOGS_MODEL_CONFIG: Dict[str,Any] = {}
+    LOGS_MODEL_CONFIG: Dict[str, Any] = {}
 
     # Namespace in which all audit logging is disabled.
     DISABLED_FOR_AUDIT_LOGS: List[str] = []
