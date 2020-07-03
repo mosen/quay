@@ -37,7 +37,7 @@ TEAM_ORGWIDE_REPO_ROLES = {
     "member": None,
 }
 
-SCOPE_MAX_REPO_ROLES = defaultdict(lambda: None)  # type: DefaultDict[scopes.Scope, Optional[str]]
+SCOPE_MAX_REPO_ROLES: DefaultDict[scopes.Scope, Optional[str]] = defaultdict(lambda: None)
 SCOPE_MAX_REPO_ROLES.update(
     {
         scopes.READ_REPO: "read",
@@ -47,12 +47,12 @@ SCOPE_MAX_REPO_ROLES.update(
     }
 )
 
-SCOPE_MAX_TEAM_ROLES = defaultdict(lambda: None)  # type: DefaultDict[scopes.Scope, Optional[str]]
+SCOPE_MAX_TEAM_ROLES: DefaultDict[scopes.Scope, Optional[str]] = defaultdict(lambda: None)
 SCOPE_MAX_TEAM_ROLES.update(
     {scopes.CREATE_REPO: "creator", scopes.DIRECT_LOGIN: "admin", scopes.ORG_ADMIN: "admin",}
 )
 
-SCOPE_MAX_USER_ROLES = defaultdict(lambda: None)  # type: DefaultDict[scopes.Scope, Optional[str]]
+SCOPE_MAX_USER_ROLES: DefaultDict[scopes.Scope, Optional[str]] = defaultdict(lambda: None)
 SCOPE_MAX_USER_ROLES.update(
     {scopes.READ_USER: "read", scopes.DIRECT_LOGIN: "admin", scopes.ADMIN_USER: "admin",}
 )
