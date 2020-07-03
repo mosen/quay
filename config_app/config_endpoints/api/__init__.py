@@ -67,7 +67,7 @@ def resource(*urls, **kwargs):
 
 class ApiResource(Resource):
     registered = False
-    method_decorators = []  # type: Union[List[Callable[[...], Any]],Dict[str, List[Callable[[...], Any]]]]
+    method_decorators: Union[List[Callable[[...], Any]], Dict[str, List[Callable[[...], Any]]]] = []
 
     def options(self):
         return None, 200

@@ -18,10 +18,10 @@ SplitScanToken = namedtuple("NextScanToken", ["version", "token"])
 class SecurityScannerModelProxy(SecurityScannerInterface):
     def configure(self, app, instance_keys, storage):
         # TODO(alecmerdler): Just use `V4SecurityScanner` once Clair V2 is removed.
-        try:
-            self._model = V2SecurityScanner(app, instance_keys, storage)
-        except InvalidConfigurationException:
-            self._model = NoopV2SecurityScanner()
+        # try:
+        #     self._model = V2SecurityScanner(app, instance_keys, storage)
+        # except InvalidConfigurationException:
+        #     self._model = NoopV2SecurityScanner()
 
         try:
             self._v4_model = V4SecurityScanner(app, instance_keys, storage)
@@ -31,7 +31,7 @@ class SecurityScannerModelProxy(SecurityScannerInterface):
         self._v4_namespace_whitelist = app.config.get("SECURITY_SCANNER_V4_NAMESPACE_WHITELIST", [])
 
         logger.info("===============================")
-        logger.info("Using split secscan model: `%s`", [self._model, self._v4_model])
+        logger.info("Using split secscan model: `%s`", [self._v4_model])
         logger.info("v4 whitelist `%s`", self._v4_namespace_whitelist)
         logger.info("===============================")
 
@@ -69,11 +69,11 @@ class SecurityScannerModelProxy(SecurityScannerInterface):
         )
 
     def register_model_cleanup_callbacks(self, data_model_config):
-        return self._model.register_model_cleanup_callbacks(data_model_config)
+        return self._v4_model.register_model_cleanup_callbacks(data_model_config)
 
     @property
     def legacy_api_handler(self):
-        return self._model.legacy_api_handler
+        return self._v4_model.legacy_api_handler
 
 
 secscan_model = SecurityScannerModelProxy()

@@ -78,7 +78,7 @@ class RepositoryReference(datatype("Repository", [])):
 
         return model.repository.is_repository_public(self._repository_obj)
 
-    @property  # type: ignore
+    @property
     def trust_enabled(self):
         """
         Returns whether trust is enabled in this repository.
@@ -89,7 +89,7 @@ class RepositoryReference(datatype("Repository", [])):
 
         return repository.trust_enabled
 
-    @property  # type: ignore
+    @property
     def id(self):
         """
         Returns the database ID of the repository.
@@ -315,7 +315,7 @@ class Tag(
         """
         return legacy_image
 
-    @property  # type: ignore
+    @property
     def id(self):
         """
         The ID of this tag for pagination purposes only.
@@ -400,7 +400,7 @@ class Manifest(datatype("Manifest", ["digest", "media_type", "internal_manifest_
             self.internal_manifest_bytes, self.media_type, validate=validate
         )
 
-    @property  # type: ignore
+    @property
     def layers_compressed_size(self):
         """
         Returns the total compressed size of the layers in the manifest or None if this could not be
@@ -411,7 +411,7 @@ class Manifest(datatype("Manifest", ["digest", "media_type", "internal_manifest_
         except ManifestException:
             return None
 
-    @property  # type: ignore
+    @property
     def is_manifest_list(self):
         """
         Returns True if this manifest points to a list (instead of an image).
@@ -469,7 +469,7 @@ class LegacyImage(
             uploading=image.storage.uploading,
         )
 
-    @property  # type: ignore
+    @property
     def id(self):
         """
         Returns the database ID of the legacy image.
@@ -602,7 +602,7 @@ class DerivedImage(datatype("DerivedImage", ["verb", "varying_metadata", "blob"]
             db_id=derived.id, verb=verb, varying_metadata=varying_metadata, blob=blob
         )
 
-    @property  # type: ignore
+    @property
     def unique_id(self):
         """
         Returns a unique ID for this derived image.

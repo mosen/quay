@@ -181,24 +181,24 @@ class DefaultConfig(ImmutableConfig):
     REGISTRY_TITLE = "Project Quay"
     REGISTRY_TITLE_SHORT = "Project Quay"
 
-    CONTACT_INFO = []  # type: List[str]
+    CONTACT_INFO: List[str] = []
 
     # Mail config
     MAIL_SERVER = ""
     MAIL_USE_TLS = True
     MAIL_PORT = 587
-    MAIL_USERNAME = None  # type: Optional[str]
-    MAIL_PASSWORD = None  # type: Optional[str]
+    MAIL_USERNAME: Optional[str] = None
+    MAIL_PASSWORD: Optional[str] = None
     MAIL_DEFAULT_SENDER = "example@projectquay.io"
     MAIL_FAIL_SILENTLY = False
     TESTING = True
 
     # DB config
     DB_URI = "sqlite:///test/data/test.db"
-    DB_CONNECTION_ARGS = {
+    DB_CONNECTION_ARGS: Optional[Dict[str,Any]] = {
         "threadlocals": True,
         "autorollback": True,
-    }  # type: Optional[Dict[str,Any]]
+    }
 
     @staticmethod
     def create_transaction(db):
@@ -224,7 +224,7 @@ class DefaultConfig(ImmutableConfig):
 
     # Build logs
     BUILDLOGS_REDIS = {"host": "localhost"}
-    BUILDLOGS_OPTIONS = []  # type: List[Any]
+    BUILDLOGS_OPTIONS: List[Any] = []
 
     # Real-time user events
     USER_EVENTS_REDIS = {"host": "localhost"}
@@ -245,17 +245,17 @@ class DefaultConfig(ImmutableConfig):
     SENTRY_PUBLIC_DSN = None
 
     # Github Config
-    GITHUB_LOGIN_CONFIG = None  # type: Optional[Dict[str, Any]]
+    GITHUB_LOGIN_CONFIG: Optional[Dict[str, Any]] = None
     GITHUB_TRIGGER_CONFIG = None
 
     # Google Config.
-    GOOGLE_LOGIN_CONFIG = None  # type: Optional[Dict[str, str]]
+    GOOGLE_LOGIN_CONFIG: Optional[Dict[str, str]] = None
 
     # Bitbucket Config.
-    BITBUCKET_TRIGGER_CONFIG = None  # type: Optional[Dict[str, str]]
+    BITBUCKET_TRIGGER_CONFIG: Optional[Dict[str, str]] = None
 
     # Gitlab Config.
-    GITLAB_TRIGGER_CONFIG = None  # type: Optional[Dict[str, str]]
+    GITLAB_TRIGGER_CONFIG: Optional[Dict[str, str]] = None
 
     NOTIFICATION_QUEUE_NAME = "notification"
     DOCKERFILE_BUILD_QUEUE_NAME = "dockerfilebuild"
@@ -267,7 +267,7 @@ class DefaultConfig(ImmutableConfig):
     EXPORT_ACTION_LOGS_QUEUE_NAME = "exportactionlogs"
 
     # Super user config. Note: This MUST BE an empty list for the default config.
-    SUPER_USERS = []  # type: List[str]
+    SUPER_USERS: List[str] = []
 
     # Feature Flag: Whether sessions are permanent.
     FEATURE_PERMANENT_SESSIONS = True
@@ -334,7 +334,7 @@ class DefaultConfig(ImmutableConfig):
 
     # Feature Flag: Whether to restrict V1 pushes to the whitelist.
     FEATURE_RESTRICTED_V1_PUSH = False
-    V1_PUSH_WHITELIST = []  # type: Optional[List[str]]
+    V1_PUSH_WHITELIST: Optional[List[str]] = []
 
     # Feature Flag: Whether or not to rotate old action logs to storage.
     FEATURE_ACTION_LOG_ROTATION = False
@@ -383,25 +383,25 @@ class DefaultConfig(ImmutableConfig):
     # user's repository list pages, regardless of whether that user is a member of the namespace.
     # Typically, this is used by an enterprise customer in configuring a set of "well-known"
     # namespaces.
-    PUBLIC_NAMESPACES = []  # type: List[str]
+    PUBLIC_NAMESPACES: List[str] = []
 
     # The namespace to use for library repositories.
     # Note: This must remain 'library' until Docker removes their hard-coded namespace for libraries.
     # See: https://github.com/docker/docker/blob/master/registry/session.go#L320
     LIBRARY_NAMESPACE = "library"
 
-    BUILD_MANAGER = ("enterprise", {})  # type: Tuple[str, Dict[Any,Any]]
+    BUILD_MANAGER: Tuple[str, Dict[Any,Any]] = ("enterprise", {})
 
-    DISTRIBUTED_STORAGE_CONFIG = {
+    DISTRIBUTED_STORAGE_CONFIG: Optional[Dict[str,List[Any]]] = {
         "local_eu": ["LocalStorage", {"storage_path": "test/data/registry/eu"}],
         "local_us": ["LocalStorage", {"storage_path": "test/data/registry/us"}],
-    }  # type: Optional[Dict[str,List[Any]]]
+    }
 
     DISTRIBUTED_STORAGE_PREFERENCE = ["local_us"]
     DISTRIBUTED_STORAGE_DEFAULT_LOCATIONS = ["local_us"]
 
     # Health checker.
-    HEALTH_CHECKER = ("LocalHealthCheck", {})  # type: Tuple[str, Dict[Any,Any]]
+    HEALTH_CHECKER: Tuple[str, Dict[Any,Any]] = ("LocalHealthCheck", {})
 
     # Userfiles
     USERFILES_LOCATION = "local_us"
@@ -412,8 +412,8 @@ class DefaultConfig(ImmutableConfig):
     LOG_ARCHIVE_PATH = "logarchive/"
 
     # Action logs archive
-    ACTION_LOG_ARCHIVE_LOCATION = "local_us"  # type: Optional[str]
-    ACTION_LOG_ARCHIVE_PATH = "actionlogarchive/"  # type: Optional[str]
+    ACTION_LOG_ARCHIVE_LOCATION: Optional[str] = "local_us"
+    ACTION_LOG_ARCHIVE_PATH: Optional[str] = "actionlogarchive/"
     ACTION_LOG_ROTATION_THRESHOLD = "30d"
 
     # Allow registry pulls when unable to write to the audit log
@@ -437,11 +437,11 @@ class DefaultConfig(ImmutableConfig):
     AVATAR_KIND = "local"
 
     # Custom branding
-    BRANDING = {
+    BRANDING: Dict[str,Optional[str]] = {
         "logo": "/static/img/quay-horizontal-color.svg",
         "footer_img": None,
         "footer_url": None,
-    }  # type: Dict[str,Optional[str]]
+    }
 
     # How often the Garbage Collection worker runs.
     GARBAGE_COLLECTION_FREQUENCY = 30  # seconds
@@ -457,7 +457,7 @@ class DefaultConfig(ImmutableConfig):
     SECURITY_SCANNER_ENDPOINT = "http://192.168.99.101:6060"
 
     # The endpoint for the V4 security scanner.
-    SECURITY_SCANNER_V4_ENDPOINT = None  # type: Optional[str]
+    SECURITY_SCANNER_V4_ENDPOINT: Optional[str] = None
 
     # The number of seconds between indexing intervals in the security scanner
     SECURITY_SCANNER_INDEXING_INTERVAL = 30
@@ -469,7 +469,7 @@ class DefaultConfig(ImmutableConfig):
     SECURITY_SCANNER_ENDPOINT_BATCH = None
 
     # If specified, GET requests that return non-200 will be retried at the following instances.
-    SECURITY_SCANNER_READONLY_FAILOVER_ENDPOINTS = []  # type: Optional[List[str]]
+    SECURITY_SCANNER_READONLY_FAILOVER_ENDPOINTS: Optional[List[str]] = []
 
     # The indexing engine version running inside the security scanner.
     SECURITY_SCANNER_ENGINE_VERSION_TARGET = 3
@@ -478,7 +478,7 @@ class DefaultConfig(ImmutableConfig):
     SECURITY_SCANNER_API_VERSION = "v1"
 
     # Namespace whitelist for security scanner.
-    SECURITY_SCANNER_V4_NAMESPACE_WHITELIST = []  # type: Optional[List[str]]
+    SECURITY_SCANNER_V4_NAMESPACE_WHITELIST: Optional[List[str]] = []
 
     # Minimum number of seconds before re-indexing a manifest with the security scanner.
     SECURITY_SCANNER_V4_REINDEX_THRESHOLD = 300
@@ -502,7 +502,7 @@ class DefaultConfig(ImmutableConfig):
     REPO_MIRROR_TLS_VERIFY = True
 
     # Replaces the SERVER_HOSTNAME as the destination for mirroring.
-    REPO_MIRROR_SERVER_HOSTNAME = None  # type: Optional[str]
+    REPO_MIRROR_SERVER_HOSTNAME: Optional[str] = None
 
     # JWTProxy Settings
     # The address (sans schema) to proxy outgoing requests through the jwtproxy
@@ -548,16 +548,16 @@ class DefaultConfig(ImmutableConfig):
     INSTANCE_SERVICE_KEY_REFRESH = 55
 
     # The whitelist of client IDs for OAuth applications that allow for direct login.
-    DIRECT_OAUTH_CLIENTID_WHITELIST = []  # type: Optional[List[str]]
+    DIRECT_OAUTH_CLIENTID_WHITELIST: Optional[List[str]] = []
 
     # URL that specifies the location of the prometheus pushgateway.
-    PROMETHEUS_PUSHGATEWAY_URL = "http://localhost:9091"  # type: Optional[str]
+    PROMETHEUS_PUSHGATEWAY_URL: Optional[str] = "http://localhost:9091"
 
     # Namespace prefix for all prometheus metrics.
     PROMETHEUS_NAMESPACE = "quay"
 
     # Overridable list of reverse DNS prefixes that are reserved for internal use on labels.
-    LABEL_KEY_RESERVED_PREFIXES = []  # type: Optional[List[str]]
+    LABEL_KEY_RESERVED_PREFIXES: Optional[List[str]] = []
 
     # Delays workers from starting until a random point in time between 0 and their regular interval.
     STAGGER_WORKERS = True
@@ -567,8 +567,8 @@ class DefaultConfig(ImmutableConfig):
 
     # Site key and secret key for using recaptcha.
     FEATURE_RECAPTCHA = False
-    RECAPTCHA_SITE_KEY = None  # type: Optional[str]
-    RECAPTCHA_SECRET_KEY = None  # type: Optional[str]
+    RECAPTCHA_SITE_KEY: Optional[str] = None
+    RECAPTCHA_SECRET_KEY: Optional[str] = None
 
     # Server where TUF metadata can be found
     TUF_SERVER = None
@@ -621,18 +621,18 @@ class DefaultConfig(ImmutableConfig):
     BROWSER_API_CALLS_XHR_ONLY = True
 
     # If set to a non-None integer value, the default number of maximum builds for a namespace.
-    DEFAULT_NAMESPACE_MAXIMUM_BUILD_COUNT = None  # type: Optional[int]
+    DEFAULT_NAMESPACE_MAXIMUM_BUILD_COUNT: Optional[int] = None
 
     # If set to a non-None integer value, the default number of maximum builds for a namespace whose
     # creator IP is deemed a threat.
-    THREAT_NAMESPACE_MAXIMUM_BUILD_COUNT = None  # type: Optional[int]
+    THREAT_NAMESPACE_MAXIMUM_BUILD_COUNT: Optional[int] = None
 
     # The API Key to use when requesting IP information.
     IP_DATA_API_KEY = None
 
     # For Billing Support Only: The number of allowed builds on a namespace that has been billed
     # successfully.
-    BILLED_NAMESPACE_MAXIMUM_BUILD_COUNT = None  # type: Optional[int]
+    BILLED_NAMESPACE_MAXIMUM_BUILD_COUNT: Optional[int] = None
 
     # Configuration for the data model cache.
     DATA_MODEL_CACHE_CONFIG = {
@@ -675,13 +675,13 @@ class DefaultConfig(ImmutableConfig):
 
     # Log model
     LOGS_MODEL = "database"
-    LOGS_MODEL_CONFIG = {}  # type: Dict[str,Any]
+    LOGS_MODEL_CONFIG: Dict[str,Any] = {}
 
     # Namespace in which all audit logging is disabled.
-    DISABLED_FOR_AUDIT_LOGS = []  # type: List[str]
+    DISABLED_FOR_AUDIT_LOGS: List[str] = []
 
     # Namespace in which pull audit logging is disabled.
-    DISABLED_FOR_PULL_LOGS = []  # type: List[str]
+    DISABLED_FOR_PULL_LOGS: List[str] = []
 
     # Feature Flag: Whether pull logs are disabled for free namespace.
     FEATURE_DISABLE_PULL_LOGS_FOR_FREE_NAMESPACES = False
@@ -693,7 +693,7 @@ class DefaultConfig(ImmutableConfig):
     # The list of domains, including subdomains, for which any *new* User with a matching
     # email address will be denied creation. This option is only used if
     # FEATURE_BLACKLISTED_EMAILS is enabled.
-    BLACKLISTED_EMAIL_DOMAINS = []  # type: List[str]
+    BLACKLISTED_EMAIL_DOMAINS: List[str] = []
 
     # Feature Flag: Whether garbage collection is enabled.
     FEATURE_GARBAGE_COLLECTION = True
@@ -713,10 +713,10 @@ class DefaultConfig(ImmutableConfig):
     APP_REGISTRY_RESULTS_LIMIT = 100
 
     # The whitelist of namespaces whose app registry package list is cached for 1 hour.
-    APP_REGISTRY_PACKAGE_LIST_CACHE_WHITELIST = []  # type: Optional[List[str]]
+    APP_REGISTRY_PACKAGE_LIST_CACHE_WHITELIST: Optional[List[str]] = []
 
     # The whitelist of namespaces whose app registry show package is cached for 1 hour.
-    APP_REGISTRY_SHOW_PACKAGE_CACHE_WHITELIST = []
+    APP_REGISTRY_SHOW_PACKAGE_CACHE_WHITELIST: Optional[List[str]] = []
 
     # The maximum size of uploaded CNR layers.
     MAXIMUM_CNR_LAYER_SIZE = "2m"
@@ -733,7 +733,7 @@ class DefaultConfig(ImmutableConfig):
 
     # The set of hostnames disallowed from webhooks, beyond localhost (which will
     # not work due to running inside a container).
-    WEBHOOK_HOSTNAME_BLACKLIST = []  # type: Optional[List[str]]
+    WEBHOOK_HOSTNAME_BLACKLIST: Optional[List[str]] = []
 
     # The root URL for documentation.
     DOCUMENTATION_ROOT = "https://access.redhat.com/documentation/en-us/red_hat_quay/3.3/"
