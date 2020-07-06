@@ -54,12 +54,12 @@ class RepositoryReference(datatype("Repository", [])):
             ),
         )
 
-    @property
+    @property  # type: ignore
     @lru_cache(maxsize=1)
     def _repository_obj(self):
         return model.repository.lookup_repository(self._db_id)
 
-    @property
+    @property  # type: ignore
     @optionalinput("kind")
     def kind(self, kind):
         """
@@ -67,7 +67,7 @@ class RepositoryReference(datatype("Repository", [])):
         """
         return kind or model.repository.get_repo_kind_name(self._repositry_obj)
 
-    @property
+    @property  # type: ignore
     @optionalinput("is_public")
     def is_public(self, is_public):
         """
@@ -96,7 +96,7 @@ class RepositoryReference(datatype("Repository", [])):
         """
         return self._db_id
 
-    @property
+    @property  # type: ignore
     @optionalinput("namespace_name")
     def namespace_name(self, namespace_name=None):
         """
@@ -111,7 +111,7 @@ class RepositoryReference(datatype("Repository", [])):
 
         return repository.namespace_user.username
 
-    @property
+    @property  # type: ignore
     @optionalinput("is_free_namespace")
     def is_free_namespace(self, is_free_namespace=None):
         """
@@ -126,7 +126,7 @@ class RepositoryReference(datatype("Repository", [])):
 
         return repository.namespace_user.stripe_id is None
 
-    @property
+    @property  # type: ignore
     @optionalinput("repo_name")
     def name(self, repo_name=None):
         """
@@ -141,7 +141,7 @@ class RepositoryReference(datatype("Repository", [])):
 
         return repository.name
 
-    @property
+    @property  # type: ignore
     @optionalinput("state")
     def state(self, state=None):
         """
@@ -265,7 +265,7 @@ class Tag(
             ),
         )
 
-    @property
+    @property  # type: ignore
     @requiresinput("manifest")
     def _manifest(self, manifest):
         """
@@ -275,7 +275,7 @@ class Tag(
         """
         return manifest
 
-    @property
+    @property  # type: ignore
     @optionalinput("manifest")
     def manifest(self, manifest):
         """
@@ -285,7 +285,7 @@ class Tag(
         """
         return Manifest.for_manifest(manifest, self.legacy_image_if_present)
 
-    @property
+    @property  # type: ignore
     @requiresinput("repository")
     def repository(self, repository):
         """
@@ -293,7 +293,7 @@ class Tag(
         """
         return repository
 
-    @property
+    @property  # type: ignore
     @requiresinput("legacy_image")
     def legacy_image(self, legacy_image):
         """
@@ -304,7 +304,7 @@ class Tag(
         """
         return legacy_image
 
-    @property
+    @property  # type: ignore
     @optionalinput("legacy_image")
     def legacy_image_if_present(self, legacy_image):
         """
@@ -368,12 +368,12 @@ class Manifest(datatype("Manifest", ["digest", "media_type", "internal_manifest_
             ),
         )
 
-    @property
+    @property  # type: ignore
     @requiresinput("tag_manifest")
     def _is_tag_manifest(self, tag_manifest):
         return tag_manifest
 
-    @property
+    @property  # type: ignore
     @requiresinput("legacy_image")
     def legacy_image(self, legacy_image):
         """
@@ -381,7 +381,7 @@ class Manifest(datatype("Manifest", ["digest", "media_type", "internal_manifest_
         """
         return legacy_image
 
-    @property
+    @property  # type: ignore
     @optionalinput("legacy_image")
     def legacy_image_if_present(self, legacy_image):
         """
@@ -418,7 +418,7 @@ class Manifest(datatype("Manifest", ["digest", "media_type", "internal_manifest_
         """
         return is_manifest_list_type(self.media_type)
 
-    @property
+    @property  # type: ignore
     @requiresinput("repository")
     def repository(self, repository):
         """
@@ -476,7 +476,7 @@ class LegacyImage(
         """
         return self._db_id
 
-    @property
+    @property  # type: ignore
     @requiresinput("images_map")
     @requiresinput("ancestor_id_list")
     def parents(self, images_map, ancestor_id_list):
@@ -492,7 +492,7 @@ class LegacyImage(
             if images_map.get(ancestor_id)
         ]
 
-    @property
+    @property  # type: ignore
     @requiresinput("blob")
     def blob(self, blob):
         """
@@ -502,7 +502,7 @@ class LegacyImage(
         """
         return blob
 
-    @property
+    @property  # type: ignore
     @requiresinput("tags_map")
     def tags(self, tags_map):
         """
@@ -573,7 +573,7 @@ class Blob(
             uploading=image_storage.uploading,
         )
 
-    @property
+    @property  # type: ignore
     @requiresinput("storage_path")
     def storage_path(self, storage_path):
         """
@@ -582,7 +582,7 @@ class Blob(
         # TODO: change this to take in the storage engine?
         return storage_path
 
-    @property
+    @property  # type: ignore
     @requiresinput("placements")
     def placements(self, placements):
         """
@@ -669,7 +669,7 @@ class LikelyVulnerableTag(datatype("LikelyVulnerableTag", ["layer_id", "name"]))
             db_id=tag.id, name=tag.name, layer_id=tag_layer_id, inputs=dict(repository=repository)
         )
 
-    @property
+    @property  # type: ignore
     @requiresinput("repository")
     def repository(self, repository):
         return RepositoryReference.for_repo_obj(repository)

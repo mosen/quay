@@ -1,3 +1,4 @@
+from typing import List, Any
 import json as py_json
 import unittest
 from contextlib import contextmanager
@@ -17,7 +18,7 @@ ADMIN_ACCESS_USER = "devtable"
 ADMIN_ACCESS_EMAIL = "jschorr@devtable.com"
 
 # OVERRIDES FROM PORTING FROM OLD APP:
-all_queues = []  # the config app doesn't have any queues
+all_queues: List[Any] = []  # the config app doesn't have any queues
 
 
 class ApiTestCase(unittest.TestCase):

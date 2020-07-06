@@ -1,3 +1,4 @@
+from typing import List
 import unittest
 import mock
 
@@ -14,6 +15,7 @@ from config_app.config_endpoints.api.suconfig import (
 from config_app.config_endpoints.api import api_bp
 from config_app.config_test import ApiTestCase, READ_ACCESS_USER, ADMIN_ACCESS_USER
 from config_app.c_app import app, config_provider
+from data.queue import WorkQueue
 
 try:
     app.register_blueprint(api_bp, url_prefix="/api")
@@ -22,7 +24,8 @@ except ValueError:
     pass
 
 # OVERRIDES FROM PORTING FROM OLD APP:
-all_queues = []  # the config app doesn't have any queues
+all_queues = []  # type: List[WorkQueue]
+# the config app doesn't have any queues
 
 
 class FreshConfigProvider(object):

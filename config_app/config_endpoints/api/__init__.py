@@ -1,3 +1,4 @@
+from typing import Union, List, Callable, Dict, Any
 import logging
 
 from flask import Blueprint, request, abort
@@ -66,7 +67,7 @@ def resource(*urls, **kwargs):
 
 class ApiResource(Resource):
     registered = False
-    method_decorators = []
+    method_decorators: Union[List[Callable[[...], Any]], Dict[str, List[Callable[[...], Any]]]] = []
 
     def options(self):
         return None, 200

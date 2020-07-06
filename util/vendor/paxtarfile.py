@@ -62,7 +62,7 @@ import operator
 try:
     import grp, pwd
 except ImportError:
-    grp = pwd = None
+    grp = pwd = None  # type: ignore
 
 # from tarfile import *
 __all__ = ["TarFile", "TarInfo", "is_tarfile", "TarError"]

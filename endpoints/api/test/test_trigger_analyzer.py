@@ -1,3 +1,4 @@
+from typing import Dict
 import pytest
 from mock import Mock
 
@@ -8,7 +9,7 @@ from util import dockerfileparse
 
 BAD_PATH = '"server_hostname/" is not a valid Quay repository path'
 
-EMPTY_CONF = {}
+EMPTY_CONF = {}  # type: Dict[str, str]
 
 GOOD_CONF = {"context": "/", "dockerfile_path": "/file"}
 
