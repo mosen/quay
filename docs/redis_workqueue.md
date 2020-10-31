@@ -8,9 +8,10 @@
 - **notification queue**: Provides a way of processing system notifications to be delivered via various means: E-mail,
   Slack, etc. Implementation `workers/notificationworker/notificationworker.py`
 - **secscan v4 notification queue**
-- **export action logs queue** Exports action logs for a repository or namespace. Implementation `workers/exportactionlogsworker.py`.
-- **repository gc queue**
-- **namespace gc queue**
+- **export action logs queue** Exports action logs (user actions) for a repository/user to a remote HTTP(S) or E-mail as JSON. 
+  Implementation `workers/exportactionlogsworker.py`.
+- **repository gc queue** Triggered by deletion of a repository, will clean up all related assets.
+- **namespace gc queue** Triggered by deletion of an organization (or user?), will clean up all related assets.
 
 ## Testing ##
 

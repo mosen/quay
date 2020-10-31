@@ -262,9 +262,29 @@ REDIS_QUEUES_ENABLE = True  # TODO: temporary feature flag
 if REDIS_QUEUES_ENABLE:
     connection = Redis(**app.config["QUEUES_REDIS"])
 
-    notification_queue = RedisWorkQueue(app.config["NOTIFICATION_QUEUE_NAME"], connection=connection, has_namespace=True)
+    notification_queue = RedisWorkQueue(
+        app.config["NOTIFICATION_QUEUE_NAME"], connection=connection, has_namespace=True,
+        callback_fn='workers.notificationworker.notificationworker.process_redis_notification',
+    )
+
+    repository_gc_queue = RedisWorkQueue(
+        app.config["REPOSITORY_GC_QUEUE_NAME"], connection=connection, has_namespace=True,
+        callback_fn='workers.repositorygcworker.process_redis_notification',
+    )
+
+    # Note: We set `has_namespace` to `False` here, as we explicitly want this queue to not be emptied
+    # when a namespace is marked for deletion.
+    namespace_gc_queue = RedisWorkQueue(
+        app.config["NAMESPACE_GC_QUEUE_NAME"], connection=connection, has_namespace=False,
+        callback_fn='workers.namespacegcworker.process_redis_notification',
+    )
 else:
     notification_queue = WorkQueue(app.config["NOTIFICATION_QUEUE_NAME"], tf, has_namespace=True)
+    repository_gc_queue = WorkQueue(app.config["REPOSITORY_GC_QUEUE_NAME"], tf, has_namespace=True)
+
+    # Note: We set `has_namespace` to `False` here, as we explicitly want this queue to not be emptied
+    # when a namespace is marked for deletion.
+    namespace_gc_queue = WorkQueue(app.config["NAMESPACE_GC_QUEUE_NAME"], tf, has_namespace=False)
 
 secscan_notification_queue = WorkQueue(
     app.config["SECSCAN_V4_NOTIFICATION_QUEUE_NAME"], tf, has_namespace=False
@@ -273,11 +293,6 @@ export_action_logs_queue = WorkQueue(
     app.config["EXPORT_ACTION_LOGS_QUEUE_NAME"], tf, has_namespace=True
 )
 
-repository_gc_queue = WorkQueue(app.config["REPOSITORY_GC_QUEUE_NAME"], tf, has_namespace=True)
-
-# Note: We set `has_namespace` to `False` here, as we explicitly want this queue to not be emptied
-# when a namespace is marked for deletion.
-namespace_gc_queue = WorkQueue(app.config["NAMESPACE_GC_QUEUE_NAME"], tf, has_namespace=False)
 
 all_queues = [
     image_replication_queue,

@@ -289,6 +289,20 @@ def _parse_time(specified_time):
         return None
 
 
+def process_redis_notification(queue_item):
+    body = queue_item['body']
+    job_details = json.loads(body)
+
+    if not features.LOG_EXPORT:
+        logger.debug("Log export not enabled; skipping")
+        return
+
+    worker = ExportActionLogsWorker(
+        export_action_logs_queue, poll_period_seconds=POLL_PERIOD_SECONDS
+    )
+    worker.process_queue_item(job_details)
+
+
 if __name__ == "__main__":
     logging.config.fileConfig(logfile_path(debug=False), disable_existing_loggers=False)
 

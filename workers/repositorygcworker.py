@@ -1,5 +1,6 @@
 import logging
 import time
+import json
 
 import features
 
@@ -45,6 +46,22 @@ class RepositoryGCWorker(QueueWorker):
         logger.debug("Purging repository %s", marker.repository)
         if not model.gc.purge_repository(marker.repository):
             raise Exception("GC interrupted; will retry")
+
+
+def process_redis_notification(queue_item):
+    body = queue_item['body']
+    job_details = json.loads(body)
+
+    if not features.REPOSITORY_GARBAGE_COLLECTION:
+        logger.info("Repository garbage collection is disabled; skipping")
+        return
+
+    worker = RepositoryGCWorker(
+        repository_gc_queue,
+        poll_period_seconds=POLL_PERIOD_SECONDS,
+        reservation_seconds=REPOSITORY_GC_TIMEOUT,
+    )
+    worker.process_queue_item(job_details)
 
 
 if __name__ == "__main__":

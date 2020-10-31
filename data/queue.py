@@ -546,6 +546,7 @@ class RedisWorkQueue(object):
         self,
         queue_name: str,
         connection,
+        callback_fn: str,
         canonical_name_match_list: Optional[List[str]] = None,
         has_namespace=False,
     ):
@@ -553,6 +554,7 @@ class RedisWorkQueue(object):
         self._currently_processing = False
         self._has_namespaced_items = has_namespace
         self._connection = connection
+        self._callback_fn = callback_fn
 
         if canonical_name_match_list is None:
             self._canonical_name_match_list = []
@@ -574,7 +576,20 @@ class RedisWorkQueue(object):
         )
 
     def put(self, canonical_name_list, message, available_after=0, retries_remaining=5):
-        job = self._queue.enqueue('workers.notificationworker.notificationworker.process_redis_notification',
+        job = self._queue.enqueue(self._callback_fn,
                                   self._queue_dict(canonical_name_list, message, available_after, retries_remaining))
         queue_item_puts.labels(self._queue_name).inc()
         return str(job)  # TODO: fetch job id specifically
+
+    def delete_namespaced_items(self, namespace, subpath=None):
+        """
+        Deletes all items in this queue that exist under the given namespace.
+        """
+        if not self._has_namespaced_items:
+            return False
+
+        subpath_query = "%s/" % subpath if subpath else ""
+        queue_prefix = "%s/%s/%s%%" % (self._queue_name, namespace, subpath_query)
+
+        # TODO: remove Queue Jobs associated with the given "namespace"
+        # return QueueItem.delete().where(QueueItem.queue_name ** queue_prefix).execute()

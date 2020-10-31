@@ -1,5 +1,6 @@
 import logging
 import time
+import json
 
 import features
 
@@ -37,6 +38,22 @@ class NamespaceGCWorker(QueueWorker):
         marker_id = job_details["marker_id"]
         if not model.user.delete_namespace_via_marker(marker_id, all_queues):
             raise Exception("GC interrupted; will retry")
+
+
+def process_redis_notification(queue_item):
+    body = queue_item['body']
+    job_details = json.loads(body)
+
+    if not features.NAMESPACE_GARBAGE_COLLECTION:
+        logger.debug("Namespace garbage collection is disabled; skipping")
+        return
+
+    worker = NamespaceGCWorker(
+        namespace_gc_queue,
+        poll_period_seconds=POLL_PERIOD_SECONDS,
+        reservation_seconds=NAMESPACE_GC_TIMEOUT,
+    )
+    worker.process_queue_item(job_details)
 
 
 if __name__ == "__main__":
