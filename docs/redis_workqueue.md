@@ -16,3 +16,12 @@
 
 To take an example, [endpoints/api/repositorynotification_models_pre_oci.py](../endpoints/api/repositorynotification_models_pre_oci.py)
 has a `queue_test_notification` method which may(?) be used in the UI to test notification delivery.
+
+## Redis Connection ##
+
+A good example of the current style of Redis connection is from the Redis buildlogs configuration
+which is consumed by the `BuildLogs` class in [data/buildlogs.py](../data/buildlogs.py).
+
+- `BUILDLOGS_REDIS` is supplied as the first argument to the constructor
+- `BUILDLOGS_OPTIONS` is used as splat *args in the constructor.
+

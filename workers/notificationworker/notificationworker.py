@@ -1,4 +1,5 @@
 import logging
+import json
 
 from app import notification_queue
 from notifications.notificationmethod import NotificationMethod, InvalidNotificationMethodException
@@ -35,6 +36,16 @@ class NotificationWorker(QueueWorker):
             except (JobException, KeyError) as exc:
                 model.increment_notification_failure_count(notification)
                 raise exc
+
+
+def process_redis_notification(queue_item):
+    body = queue_item['body']
+    job_details = json.loads(body)
+
+    worker = NotificationWorker(
+        notification_queue, poll_period_seconds=10, reservation_seconds=30, retry_after_seconds=30
+    )
+    worker.process_queue_item(job_details)
 
 
 if __name__ == "__main__":

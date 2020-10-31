@@ -11,6 +11,7 @@ from threading import Event
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from raven import Client
+from rq import Worker as RQWorker
 
 from app import app
 from data.database import UseThenDisconnect
@@ -150,3 +151,19 @@ class Worker(object):
 
     def join(self):
         self.terminate(graceful=True)
+
+
+class RedisWorker(RQWorker):
+    """
+    Base class for workers which are run using python-rq
+
+    This class exists because:
+
+    - The RQ worker class should maintain interface compatibility with the Quay Database Queue/Worker class.
+    - The RQ worker should be configured from Quay instead of the RQ conventions of either command-line or settings-file
+      configuration.
+    """
+
+    def __init__(self, *args, **kwargs):  # noqa
+        # kwargs.update({'connection': app.config.get('QUEUES_REDIS', {})})
+        super(RedisWorker, self).__init__(*args, **kwargs)

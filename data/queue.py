@@ -1,6 +1,7 @@
 import uuid
 
-from typing import List, Tuple
+from rq import Queue
+from typing import List, Tuple, Optional
 from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
@@ -112,9 +113,6 @@ class WorkQueueBase(ABC):
 
     @abstractmethod
     def alive(self, canonical_name_list):
-        pass
-
-    def _queue_dict(self, canonical_name_list, message, available_after, retries_remaining):
         pass
 
     @abstractmethod
@@ -534,3 +532,49 @@ def delete_expired(expiration_threshold, deletion_threshold, batch_size):
     QueueItem.delete().where(QueueItem.id << to_delete).execute()
     queue_item_deletes.inc(len(to_delete))
     return len(to_delete)
+
+
+class RedisWorkQueue(object):
+    """
+    Work queue defines methods for interacting with a queue backed by a redis instance.
+
+    This object provides a WorkQueue compatible interface, but wraps a python-rq Queue instance to do the queue
+    management.
+    """
+
+    def __init__(
+        self,
+        queue_name: str,
+        connection,
+        canonical_name_match_list: Optional[List[str]] = None,
+        has_namespace=False,
+    ):
+        self._queue_name = queue_name
+        self._currently_processing = False
+        self._has_namespaced_items = has_namespace
+        self._connection = connection
+
+        if canonical_name_match_list is None:
+            self._canonical_name_match_list = []
+        else:
+            self._canonical_name_match_list = canonical_name_match_list
+
+        self._queue = Queue(self._queue_name, connection=connection)
+
+    @staticmethod
+    def _canonical_name(name_list):
+        return "/".join(name_list) + "/"
+
+    def _queue_dict(self, canonical_name_list, message, available_after, retries_remaining):
+        return dict(
+            queue_name=self._canonical_name([self._queue_name] + canonical_name_list),
+            body=message,
+            retries_remaining=retries_remaining,
+            available_after=datetime.utcnow() + timedelta(seconds=available_after or 0),
+        )
+
+    def put(self, canonical_name_list, message, available_after=0, retries_remaining=5):
+        job = self._queue.enqueue('workers.notificationworker.notificationworker.process_redis_notification',
+                                  self._queue_dict(canonical_name_list, message, available_after, retries_remaining))
+        queue_item_puts.labels(self._queue_name).inc()
+        return str(job)  # TODO: fetch job id specifically

@@ -13,6 +13,7 @@ from flask_principal import Principal
 from jwkest.jwk import RSAKey
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.exceptions import HTTPException
+from redis import Redis
 
 import features
 
@@ -35,7 +36,7 @@ from data.billing import Billing
 from data.buildlogs import BuildLogs
 from data.cache import get_model_cache
 from data.model.user import LoginWrappedDBUser
-from data.queue import WorkQueue
+from data.queue import RedisWorkQueue, WorkQueue
 from data.userevent import UserEventsBuilderModule
 from data.userfiles import Userfiles
 from data.users import UserAuthentication
@@ -257,7 +258,14 @@ image_replication_queue = WorkQueue(app.config["REPLICATION_QUEUE_NAME"], tf, ha
 dockerfile_build_queue = WorkQueue(
     app.config["DOCKERFILE_BUILD_QUEUE_NAME"], tf, has_namespace=True
 )
-notification_queue = WorkQueue(app.config["NOTIFICATION_QUEUE_NAME"], tf, has_namespace=True)
+REDIS_QUEUES_ENABLE = True  # TODO: temporary feature flag
+if REDIS_QUEUES_ENABLE:
+    connection = Redis(**app.config["QUEUES_REDIS"])
+
+    notification_queue = RedisWorkQueue(app.config["NOTIFICATION_QUEUE_NAME"], connection=connection, has_namespace=True)
+else:
+    notification_queue = WorkQueue(app.config["NOTIFICATION_QUEUE_NAME"], tf, has_namespace=True)
+
 secscan_notification_queue = WorkQueue(
     app.config["SECSCAN_V4_NOTIFICATION_QUEUE_NAME"], tf, has_namespace=False
 )

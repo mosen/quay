@@ -226,6 +226,10 @@ class DefaultConfig(ImmutableConfig):
     BUILDLOGS_REDIS = {"host": "localhost"}
     BUILDLOGS_OPTIONS = []
 
+    # Queue workers
+    QUEUES_REDIS = {"host": "localhost", "password": "redis"}
+    QUEUES_OPTIONS = []  # I dont have a use case currently, but RQ might provide one
+
     # Real-time user events
     USER_EVENTS_REDIS = {"host": "localhost"}
 
