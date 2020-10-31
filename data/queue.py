@@ -1,6 +1,8 @@
 import uuid
 
+from typing import List, Tuple
 from datetime import datetime, timedelta
+from abc import ABC, abstractmethod
 from contextlib import contextmanager
 
 from prometheus_client import Counter, Gauge
@@ -44,7 +46,115 @@ MINIMUM_EXTENSION = timedelta(seconds=20)
 DEFAULT_BATCH_SIZE = 1000
 
 
-class WorkQueue(object):
+class WorkQueueBase(ABC):
+    """
+    A base class which describes the interface of `WorkQueue` so that we can be guaranteed that the RedisQueue class
+    adheres to the same contract.
+
+    Not very pythonic, and not needed after implementation of alternate queue driver.
+    """
+    @staticmethod
+    def _canonical_name(name_list: List[str]) -> str:
+        pass
+
+    @classmethod
+    def _running_jobs(cls, now, name_match_query):
+        pass
+
+    @classmethod
+    def _available_jobs(cls, now, name_match_query):
+        pass
+
+    @staticmethod
+    def _running_jobs_where(query, now):
+        pass
+
+    @staticmethod
+    def _available_jobs_where(query, now):
+        pass
+
+    @classmethod
+    def _available_jobs_not_running(cls, now, name_match_query, running_query):
+        pass
+
+    @abstractmethod
+    def num_alive_jobs(self, canonical_name_list):
+        pass
+
+    @abstractmethod
+    def num_available_jobs_between(
+            self, available_min_time, available_max_time, canonical_name_list
+    ):
+        pass
+
+    def _name_match_query(self):
+        pass
+
+    @staticmethod
+    def _item_by_id_for_update(queue_id):
+        pass
+
+    @abstractmethod
+    def get_metrics(self) -> Tuple[int, int, int]:
+        pass
+
+    @abstractmethod
+    def update_metrics(self):
+        pass
+
+    @abstractmethod
+    def has_retries_remaining(self, item_id):
+        pass
+
+    @abstractmethod
+    def delete_namespaced_items(self, namespace, subpath=None):
+        pass
+
+    @abstractmethod
+    def alive(self, canonical_name_list):
+        pass
+
+    def _queue_dict(self, canonical_name_list, message, available_after, retries_remaining):
+        pass
+
+    @abstractmethod
+    def batch_insert(self, batch_size=DEFAULT_BATCH_SIZE):
+        pass
+
+    @abstractmethod
+    def put(self, canonical_name_list, message, available_after=0, retries_remaining=5):
+        pass
+
+    def _select_available_item(self, ordering_required, now):
+        pass
+
+    def _attempt_to_claim_item(self, db_item, now, processing_time):
+        pass
+
+    @abstractmethod
+    def get(self, processing_time=300, ordering_required=False):
+        pass
+
+    @abstractmethod
+    def cancel(self, item_id):
+        pass
+
+    @abstractmethod
+    def complete(self, completed_item):
+        pass
+
+    @abstractmethod
+    def incomplete(self, incomplete_item, retry_after=300, restore_retry=False):
+        pass
+
+    @abstractmethod
+    def extend_processing(
+            self, item, seconds_from_now, minimum_extension=MINIMUM_EXTENSION, updated_data=None
+    ):
+        pass
+
+
+class WorkQueue(WorkQueueBase):
     """
     Work queue defines methods for interacting with a queue backed by the database.
     """
